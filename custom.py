@@ -1,6 +1,5 @@
 from dotenv import load_dotenv
 import google.generativeai as genai
-import weaviate
 import os
 from utils import *
 import weaviate
@@ -31,10 +30,11 @@ weaviate_client = weaviate.connect_to_weaviate_cloud(
 documents = [
     {"id": "1", "title": "AI Basics", "content": "This is a sample document about AI."},
     {"id": "2", "title": "Machine Learning", "content": "This document is about machine learning."},
+    {"id": "3", "title": "Deep Learning", "content": "Deep learning is the basis of AGI claims these days."},
 ]
 
-if (weaviate_client.collections.exists("Document")):
-    weaviate_client.collections.delete("Document")
+# if (weaviate_client.collections.exists("Document")):
+#     weaviate_client.collections.delete("Document")
 weaviate_client.collections.create(
     name="Document",
      vectorizer_config=wc.config.Configure.Vectorizer.none(),
@@ -51,15 +51,16 @@ for i,d  in enumerate(documents):
 print("Documents successfully inserted into Weaviate!")
 
 questions = weaviate_client.collections.get("Document")
-questions.data.insert_many(objs)
+# print(questions)
+# questions.data.insert_many(objs)
 
 query = genai.embed_content( model="models/text-embedding-004", content="News reporters have forcasted the looming weather")
-import time
-time.sleep(1)  # Sleep so we don't query before async indexing finishes
+# import time
+# time.sleep(1)  # Sleep so we don't query before async indexing finishes
 
 response = questions.query.near_vector(
     near_vector=query["embedding"],
-    limit=2,
+    limit=3,
     return_metadata=wc.query.MetadataQuery(certainty=True)
 )
 

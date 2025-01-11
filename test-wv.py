@@ -1,5 +1,5 @@
 import weaviate
-from weaviate.classes.init import Auth
+from weaviate.classes.init import Auth 
 from dotenv import load_dotenv
 from weaviate.classes.config import Configure,Property,DataType
 import os
